@@ -38,6 +38,9 @@ public class Perms {
 
     public static final String COMBAT_LOG_CMD_LOG = PREFIX + "combatlog.cmd.log";
 
+    public static final String AUGMENTS_CMD_INFO = PREFIX + "augments.cmd.info";
+    public static final String AUGMENTS_CMD_OPEN = PREFIX + "augments.cmd.open";
+
     public static final String IDENTIFY_CMD_IDENTIFY = PREFIX + "identify.cmd.identify";
 
     public static final String FORTIFY_CMD_FORTIFY   = PREFIX + "fortify.cmd.fortify";

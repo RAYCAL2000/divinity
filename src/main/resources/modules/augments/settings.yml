@@ -1,0 +1,27 @@
+command-aliases: augments
+
+general:
+  # What augments mode to use, defaults to INVENTORY.
+  # Available options are:
+  # INVENTORY:
+  # - The augment slots are found within the player's vanilla inventory.
+  # - This limits the amount of items that can be stored in the player's inventory.
+  # - Inventory size cannot be changed.
+  # - Only augment items can be put in the specified slots.
+  # GUI:
+  # - The augment slots are found within a separate inventory. (/augments open)
+  # - Can use all slots inside of the GUI inventory.
+  # - GUI inventory size can be changed.
+  # - Only augments can be stored inside of this GUI in specified slots.
+  mode: GUI
+  
+# Settings for INVENTORY mode
+inventory:
+  slots: []
+  content: []
+
+# Settings for GUI mode
+gui:
+  title: '&4&l<&4&nAugments&4&l>'
+  size: 54
+  slots: []

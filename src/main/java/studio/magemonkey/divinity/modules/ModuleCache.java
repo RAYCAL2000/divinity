@@ -28,6 +28,7 @@ import studio.magemonkey.divinity.modules.list.runes.RuneManager;
 import studio.magemonkey.divinity.modules.list.sell.SellManager;
 import studio.magemonkey.divinity.modules.list.sets.SetManager;
 import studio.magemonkey.divinity.modules.list.soulbound.SoulboundManager;
+import studio.magemonkey.divinity.modules.list.augments.AugmentsManager;
 
 public class ModuleCache {
     private final Divinity plugin;
@@ -60,6 +61,7 @@ public class ModuleCache {
 
     private SellManager      sellManager;
     private CombatLogManager combatLogManager;
+    private AugmentsManager augmentsManager;
 
     private ConsumablesManager consumablesManager;
 //    private ActiveItemManager activeItemManager;
@@ -110,6 +112,7 @@ public class ModuleCache {
 
         this.dropManager = (DropManager) this.plugin.getModuleManager().register(new DropManager(plugin));
         this.lootManager = (LootManager) this.plugin.getModuleManager().register(new LootManager(plugin));
+        this.augmentsManager = (AugmentsManager) this.plugin.getModuleManager().register(new AugmentsManager(plugin));
     }
 
     public void shutdown() {
@@ -134,6 +137,7 @@ public class ModuleCache {
         this.lootManager = null;
         this.sellManager = null;
         this.combatLogManager = null;
+        this.augmentsManager = null;
     }
 
     @Nullable
@@ -245,4 +249,10 @@ public class ModuleCache {
     public MoneyManager getMoneyManager() {
         return this.moneyManager;
     }
+
+    @Nullable
+    public AugmentsManager getAugmentsManager() {
+        return this.augmentsManager;
+    }
+
 }

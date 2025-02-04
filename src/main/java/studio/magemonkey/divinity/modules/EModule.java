@@ -2,6 +2,7 @@ package studio.magemonkey.divinity.modules;
 
 public class EModule {
     public static final String ARROWS         = "arrows";
+    public static final String AUGMENTS       = "augments";
     public static final String CLASSES        = "classes";
     public static final String COMBAT_LOG     = "combat_log";
     public static final String CUSTOM_ITEMS   = "custom_items";

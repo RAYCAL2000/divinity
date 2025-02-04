@@ -289,6 +289,7 @@ public class Lang extends CoreLang {
             new ILangMsg(this, "&cYou can select a class only once! But you can create new profile for new character.");
     public ILangMsg Classes_Select_Done                               = new ILangMsg(this, "You're &a%class% &7now!");
     public ILangMsg CombatLog_Cmd_Log_Desc                            = new ILangMsg(this, "View latest combat log.");
+    public ILangMsg Augments_Cmd_Info_Desc                            = new ILangMsg(this, "Info of the augments.");
     public ILangMsg Consumables_Consume_Error_FoodLevel               =
             new ILangMsg(this, "&cYou can not consume &e%item% &cbecause your food level is full.");
     public ILangMsg Consumables_Consume_Error_HealthLevel             =
