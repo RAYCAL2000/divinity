@@ -24,4 +24,17 @@ inventory:
 gui:
   title: '&4&l<&4&nAugments&4&l>'
   size: 54
-  slots: []
+  # Slots for Augment Equipment.
+  equipment:
+    ring_slot:
+      material: GREEN_CONCRETE
+      name: '&7Ring Slot'
+      slots: 0
+      lore:
+        - "Place your ring here please :D"
+  content:
+    filler_yellow:
+      material: YELLOW_STAINED_GLASS_PANE
+      name: '&7'
+      slots: 45,46,52,53
+      type: NONE

@@ -18,29 +18,30 @@ import studio.magemonkey.codex.manager.api.gui.NGUI;
 import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.codex.util.NumberUT;
 import studio.magemonkey.divinity.Divinity;
-import studio.magemonkey.divinity.modules.list.sell.event.PlayerPreSellItemEvent;
-import studio.magemonkey.divinity.modules.list.sell.event.PlayerSellItemEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Arrays;
+
 
 class AugmentsGUI extends NGUI<Divinity> {
 
-    private final int[]   itemSlots;
+    private final int[] equipmentSlots = {0,1};
+    Set<Integer> contentSlots;    
+    private final JYML cfg;
 
     public AugmentsGUI(@NotNull AugmentsManager augmentsManager) {
         super(augmentsManager.plugin, augmentsManager.getJYML(), "gui.");
 
-        JYML   cfg  = augmentsManager.getJYML();
+        cfg  = augmentsManager.getJYML();
         String path = "gui.";
+        contentSlots = new HashSet<Integer>();
 
         // Sets the size of the GUI to a multiple of 9.
         this.setSize(Math.min(54, ((cfg.getInt(path+"size",54) + 8) / 9) * 9));
         // Sets the title of the GUI.
         this.setTitle(cfg.getString(path+"title", "&4&l<&4&nAugments&4&l>"));
-
-        this.itemSlots = cfg.getIntArray(path + "item-slots");
 
         // GuiClick click = (p, type, e) -> {
         //     if (type == ContentType.ACCEPT) {
@@ -64,41 +65,37 @@ class AugmentsGUI extends NGUI<Divinity> {
         //         }
         //         inv.setContents(new ItemStack[]{});
 
-        //         if (priceTotal > 0) {
-        //             PlayerPreSellItemEvent event1 = new PlayerPreSellItemEvent(p, priceMap);
-        //             plugin.getPluginManager().callEvent(event1);
-        //             if (event1.isCancelled()) {
-        //                 return;
-        //             }
-
-        //             vault.give(p, event1.getPrice());
-
-        //             PlayerSellItemEvent event = new PlayerSellItemEvent(p, event1.getPriceMap());
-        //             plugin.getPluginManager().callEvent(event);
-        //         }
-
         //         p.closeInventory();
         //     } else if (type == ContentType.EXIT) {
         //         p.closeInventory();
         //     }
         // };
 
-        // for (String itemId : cfg.getSection(path + "content")) {
-        //     GuiItem gi = cfg.getGuiItem(path + "content." + itemId, ContentType.class);
-        //     if (gi == null) continue;
+        // Add Content Items
+        for (String itemId : cfg.getSection(path + "content")) {
+            GuiItem contentItem = cfg.getGuiItem(path + "content." + itemId, ContentType.class);
+            if (contentItem == null) continue;
+            contentSlots.addAll(Arrays.stream(contentItem.getSlots()).boxed().collect(Collectors.toSet()));
+            this.addButton(contentItem);
+        }
+    
+        // Add Augment Slots
+        // Overrides any Content Items
 
-        //     if (gi.getType() != null) {
-        //         gi.setClick(click);
-        //     }
-
-        //     this.addButton(gi);
-        // }
     }
 
     @Override
     protected void onCreate(@NotNull Player player, @NotNull Inventory inv, int page) {
-        
-
+        // Fill GUI with Default Items
+        String path = "gui.";
+        for (String itemId : cfg.getSection(path + "equipment")) {
+            GuiItem equipmentItem = cfg.getGuiItem(path + "equipment." + itemId, ContentType.class);
+            // this.equipmentSlots.addAll(equipmentItem.getSlots());
+            if (equipmentItem == null) continue;
+            this.addButton(equipmentItem);
+        }
+        // Override Default Items with Player Items
+        player.sendMessage("Opening Augments GUI!");
     }
 
     @Override
@@ -114,7 +111,12 @@ class AugmentsGUI extends NGUI<Divinity> {
 
     @Override
     protected boolean cancelClick(int slot) {
-        return slot < this.getSize() && !ArrayUtils.contains(this.itemSlots, slot);
+        // Cancel Click if Content Item
+        if (contentSlots.contains(slot)){ return true; }
+        // Cancel Click if Default Equipment Item
+
+        // Do Not Cancel Click otherwise (Player Item)
+        return false;
     }
 
     @Override
@@ -136,7 +138,7 @@ class AugmentsGUI extends NGUI<Divinity> {
     @Override
     public void onClose(@NotNull Player player, @NotNull InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
-        for (int slot : this.itemSlots) {
+        for (int slot : this.equipmentSlots) {
             ItemStack item = inv.getItem(slot);
             if (item != null) {
                 ItemUT.addItem(player, item);
@@ -148,40 +150,24 @@ class AugmentsGUI extends NGUI<Divinity> {
     // As these items are loaded into JGUI database,
     // we may just replace them in their slots.
     private void update(@NotNull Inventory inv) {
-        for (GuiItem guiItem : this.getContent().values()) {
-            ItemStack item = guiItem.getItem();
-            ItemMeta  meta = item.getItemMeta();
-            if (meta == null) continue;
+        // for (GuiItem guiItem : this.getContent().values()) {
+        //     ItemStack item = guiItem.getItem();
+        //     ItemMeta  meta = item.getItemMeta();
+        //     if (meta == null) continue;
 
-            String cost = NumberUT.format(this.getTotalPrice(inv));
+        //     if (meta.hasDisplayName()) {
+        //     }
 
-            if (meta.hasDisplayName()) {
-                meta.setDisplayName(meta.getDisplayName().replace("%cost%", cost));
-            }
+        //     List<String> lore = meta.getLore();
+        //     if (lore != null) {
+        //         meta.setLore(lore);
+        //     }
+        //     item.setItemMeta(meta);
 
-            List<String> lore = meta.getLore();
-            if (lore != null) {
-                lore.replaceAll(str -> str.replace("%cost%", cost));
-                meta.setLore(lore);
-            }
-            item.setItemMeta(meta);
-
-            for (int i : guiItem.getSlots()) {
-                inv.setItem(i, item);
-            }
-        }
+        //     for (int i : guiItem.getSlots()) {
+        //         inv.setItem(i, item);
+        //     }
+        // }
     }
 
-    private double getTotalPrice(@NotNull Inventory inv) {
-        double cost = 0;
-
-        for (int i : this.itemSlots) {
-            ItemStack item = inv.getItem(i);
-            if (item == null) continue;
-
-            cost += this.plugin.getWorthManager().getItemWorth(item);
-        }
-
-        return cost;
-    }
 }
